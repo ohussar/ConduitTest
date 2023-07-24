@@ -1,0 +1,131 @@
+{
+  "multipart": [
+    {
+      "apply":{
+        "model": "conduit_test:block/conduitcenter"
+      }
+    },
+    {
+      "apply": {
+        "model": "conduit_test:block/conduitside",
+        "uvlock": false
+      },
+      "when": {
+        "north": 1
+      }
+    },
+    {
+      "apply": {
+        "model": "conduit_test:block/conduitside",
+        "uvlock": false,
+        "y": 90
+      },
+      "when": {
+        "east": 1
+      }
+    },
+    {
+      "apply": {
+        "model": "conduit_test:block/conduitside",
+        "uvlock": false,
+        "y": 180
+      },
+      "when": {
+        "south": 1
+      }
+    },
+    {
+      "apply": {
+        "model": "conduit_test:block/conduitside",
+        "uvlock": false,
+        "y": 270
+      },
+      "when": {
+        "west": 1
+      }
+    },
+    {
+      "apply": {
+        "model": "conduit_test:block/conduitside",
+        "uvlock": false,
+        "x": 270
+      },
+      "when": {
+        "up": 1
+      }
+    },
+    {
+      "apply": {
+        "model": "conduit_test:block/conduitside",
+        "uvlock": false,
+        "x": 90
+      },
+      "when": {
+        "down": 1
+      }
+    },
+
+
+
+    {
+      "apply": {
+        "model": "conduit_test:block/conduitsideconnected",
+        "uvlock": false
+      },
+      "when": {
+        "north": 2
+      }
+    },
+    {
+      "apply": {
+        "model": "conduit_test:block/conduitsideconnected",
+        "uvlock": false,
+        "y": 90
+      },
+      "when": {
+        "east": 2
+      }
+    },
+    {
+      "apply": {
+        "model": "conduit_test:block/conduitsideconnected",
+        "uvlock": false,
+        "y": 180
+      },
+      "when": {
+        "south": 2
+      }
+    },
+    {
+      "apply": {
+        "model": "conduit_test:block/conduitsideconnected",
+        "uvlock": false,
+        "y": 270
+      },
+      "when": {
+        "west": 2
+      }
+    },
+    {
+      "apply": {
+        "model": "conduit_test:block/conduitsideconnected",
+        "uvlock": false,
+        "x": 270
+      },
+      "when": {
+        "up": 2
+      }
+    },
+    {
+      "apply": {
+        "model": "conduit_test:block/conduitsideconnected",
+        "uvlock": false,
+        "x": 90
+      },
+      "when": {
+        "down": 2
+      }
+    }
+
+  ]
+}
