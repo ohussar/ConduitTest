@@ -24,4 +24,9 @@ public class DirectionHolder {
     public int[] toArray(){
         return new int[]{north, east, south, west, up, down};
     }
+
+    public boolean noNeighbors(){
+        return north == 0 && east == 0 && south == 0 && west == 0 && up == 0 && down == 0;
+    }
+
 }

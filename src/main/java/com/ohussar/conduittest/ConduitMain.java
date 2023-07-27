@@ -1,11 +1,14 @@
 package com.ohussar.conduittest;
 
 import com.mojang.logging.LogUtils;
+import com.ohussar.conduittest.Blocks.Machine.CompactingMachineScreen;
 import com.ohussar.conduittest.Blocks.ModBlocks;
 import com.ohussar.conduittest.Core.Networking.ModMessages;
 import com.ohussar.conduittest.Items.ModItems;
 import com.ohussar.conduittest.Registering.ModBlockEntities;
+import com.ohussar.conduittest.Registering.ModMenuTypes;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.item.BlockItem;
@@ -54,6 +57,7 @@ public class ConduitMain
         ModBlocks.register(modEventBus);
         ModItems.register(modEventBus);
         ModBlockEntities.register(modEventBus);
+        ModMenuTypes.register(modEventBus);
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -79,7 +83,7 @@ public class ConduitMain
         @SuppressWarnings("deprecated")
         public static void onClientSetup(FMLClientSetupEvent event)
         {
-
+            MenuScreens.register(ModMenuTypes.COMPACTING_MACHINE_MENU.get(), CompactingMachineScreen::new);
         }
     }
 }

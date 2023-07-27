@@ -1,8 +1,13 @@
 package com.ohussar.conduittest.Core;
 
 import com.ohussar.conduittest.Blocks.Conduit.ConduitBlockEntity;
+import com.ohussar.conduittest.Blocks.Conduit.ConduitStructureManager;
+import com.ohussar.conduittest.ConduitMain;
 import com.ohussar.conduittest.Core.Interfaces.ConduitExtractable;
 import com.ohussar.conduittest.Core.Interfaces.ISteamCapabilityProvider;
+import com.ohussar.conduittest.Core.Networking.Messages.SyncTank;
+import com.ohussar.conduittest.Core.Networking.ModMessages;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
@@ -17,29 +22,23 @@ import java.util.UUID;
 
 public abstract class AbstractSourchMachine extends BlockEntity implements ISteamCapabilityProvider {
     public UUID id;
-    public List<ConduitExtractable> DESTINATIONS = new ArrayList<>();
     private int ticksCounted = 0;
     private int tickGenerated = 0;
+    public double machineGeneration = 30;
+    public SteamTank tank;
+
     public AbstractSourchMachine(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
         id = UUID.randomUUID();
+        tank = new SteamTank(1500, 0, 1.5, 30);
     }
-
+    @Override
+    public void syncTank(SteamTank t) {
+        this.tank = t;
+    }
     @Override
     public Type getExtractionType() {
         return Type.SOURCE;
-    }
-
-    public void findDestinations(){
-        BlockPos pos = worldPosition;
-        BlockPos[] posList = {pos.north(), pos.east(), pos.south(), pos.west(), pos.above(), pos.below()};
-        UUID called = UUID.randomUUID();
-        for(int k = 0; k < posList.length; k++){
-            if(level.getBlockEntity(posList[k]) instanceof ConduitBlockEntity){
-                ConduitBlockEntity entity = (ConduitBlockEntity) level.getBlockEntity(posList[k]);
-                entity.propagate(called, this);
-            }
-        }
     }
 
     @Override
@@ -55,25 +54,25 @@ public abstract class AbstractSourchMachine extends BlockEntity implements IStea
     }
 
     public void tickEssential(Level level, BlockPos pos, BlockState state, AbstractSourchMachine entity){
-        if(!level.isClientSide()){
-            ticksCounted++;
-            if(ticksCounted >= tickGenerated){
-                ticksCounted = 0;
-                Random rand = new Random();
-                tickGenerated = 15;
-                DESTINATIONS.clear();
-                findDestinations();
-            }
+        ticksCounted++;
+        if(ticksCounted == 5 && !level.isClientSide()) {
+            ticksCounted = 0;
+            ModMessages.sendToClients(new SyncTank(entity.tank, entity.worldPosition));
         }
 
-        // do this both in client side and server, to prevent excessive networking data, but client still must sync variables
-        // with server.
-        if(DESTINATIONS.size() > 0){
-            for(int k = 0; k < DESTINATIONS.size(); k++) {
-                ConduitExtractable dest = DESTINATIONS.get(k);
-                if(dest instanceof ISteamCapabilityProvider<?> steam){
-                    steam.handleSteamReceived(5, false);
+        BlockPos[] ad = CommonFunctions.adjacentBlocks(pos);
+        List<ConduitStructureManager> structureManagers = new ArrayList<>();
+        for(int k = 0; k < ad.length; k++){
+            if(level.getBlockEntity(ad[k]) instanceof ConduitBlockEntity be){
+                if(!structureManagers.contains(be.getManager())){
+                    structureManagers.add(be.getManager());
                 }
+            }
+        }
+        for(int jj = 0; jj < structureManagers.size(); jj++){
+            if(structureManagers.get(jj) != null && structureManagers.get(jj).getMachineCount() > 0){
+                double increase = (double) machineGeneration / (double)structureManagers.size();
+                structureManagers.get(jj).addToSystem(increase, this.level);
             }
         }
     }

@@ -1,7 +1,10 @@
 package com.ohussar.conduittest.Blocks.Conduit;
 
+import com.ohussar.conduittest.Blocks.SourceMachine.SourceMachineEntity;
+import com.ohussar.conduittest.ConduitMain;
 import com.ohussar.conduittest.Core.DirectionHolder;
 import com.ohussar.conduittest.Core.Interfaces.ConduitExtractable;
+import com.ohussar.conduittest.Registering.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -10,6 +13,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
@@ -29,19 +34,13 @@ public class Conduit extends BaseEntityBlock {
     public static final IntegerProperty UP = IntegerProperty.create("up",0, 2);
     public static final IntegerProperty DOWN = IntegerProperty.create("down",0, 2);
 
-    public final List<Block> connectTo = new ArrayList<Block>();
-
     private VoxelShape shape = Block.box(6, 6, 6, 10, 10, 10);
 
     public Conduit(Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(NORTH, Integer.valueOf(0)).setValue(EAST, Integer.valueOf(0)).setValue(SOUTH, Integer.valueOf(0)).setValue(WEST, Integer.valueOf(0)).setValue(UP, Integer.valueOf(0)).setValue(DOWN, Integer.valueOf(0)));
-        addConnectionBlock(Blocks.IRON_BLOCK);
     }
 
-    public void addConnectionBlock(Block block){
-        this.connectTo.add(block);
-    }
 
     @Nullable
     @Override
@@ -135,20 +134,41 @@ public class Conduit extends BaseEntityBlock {
                 .setValue(UP   , Integer.valueOf(dir.up))
                 .setValue(DOWN , Integer.valueOf(dir.down));
 
+
         return newState;
     }
 
     @Override
-    public void neighborChanged(BlockState p_60509_, Level level, BlockPos blockPos, Block p_60512_, BlockPos p_60513_, boolean p_60514_) {
-        if(!level.isClientSide()){
-            BlockState blockstate = level.getBlockState(blockPos);
-            Block block = blockstate.getBlock();
-            if(block instanceof Conduit conduit){
-                BlockState newstate = conduit.getState(level, blockstate, blockPos);
-                ((ConduitBlockEntity) (level.getBlockEntity(blockPos))).getAllNeightbors();
+    public void neighborChanged(BlockState p_60509_, Level level, BlockPos blockPos, Block p_60512_, BlockPos pos, boolean p_60514_) {
+        BlockState blockstate = level.getBlockState(blockPos);
+        Block block = blockstate.getBlock();
+        if(block instanceof Conduit conduit){
+            BlockState newstate = conduit.getState(level, blockstate, blockPos);
+            ((ConduitBlockEntity) (level.getBlockEntity(blockPos))).getAllNeightbors();
+            if(!level.isClientSide()) {
                 level.sendBlockUpdated(blockPos, blockstate, newstate, 2);
             }
         }
+        if(level.getBlockState(pos).getBlock() instanceof Conduit conduit){
+            ConduitBlockEntity myEntity = (ConduitBlockEntity) level.getBlockEntity(blockPos);
+
+            ConduitBlockEntity adjacentManager = (ConduitBlockEntity) level.getBlockEntity(pos);
+
+            if(myEntity.getManager() == null){
+                myEntity.createManager();
+            }
+
+            myEntity.getManager().tryToConnectStructures(level, pos);
+
+        }
+    }
+
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean p_60519_) {
+        if(!state.is(newState.getBlock())){
+            ((ConduitBlockEntity) level.getBlockEntity(pos)).onRemove();
+        }
+        super.onRemove(state, level, pos, newState, p_60519_);
     }
 
     @Override
@@ -159,6 +179,13 @@ public class Conduit extends BaseEntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new ConduitBlockEntity(pos, state);
+        ConduitBlockEntity block = new ConduitBlockEntity(pos, state);
+
+        return block;
+    }
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type_) {
+        return createTickerHelper(type_, ModBlockEntities.CONDUIT_ENTITY.get(), ConduitBlockEntity::tick);
     }
 }

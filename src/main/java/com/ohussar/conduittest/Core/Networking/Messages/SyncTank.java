@@ -20,7 +20,7 @@ public class SyncTank {
     }
 
     public SyncTank(FriendlyByteBuf buf){
-        this.tank = new SteamTank(0,0,0);
+        this.tank = new SteamTank(0,0,0, 0);
         this.tank.fromBytes(buf);
         this.pos = buf.readBlockPos();
     }
