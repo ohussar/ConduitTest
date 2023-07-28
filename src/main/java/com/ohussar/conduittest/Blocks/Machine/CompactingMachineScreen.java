@@ -30,13 +30,13 @@ public class CompactingMachineScreen extends AbstractContainerScreen<CompactingM
 
         int x = (width - imageWidth)/2;
         int y = (height - imageHeight)/2;
-        this.blit(pose, x, y, 0, 0, imageWidth, imageHeight);
+        this.blit(pose, x, y, 0, 0, 229, imageHeight);
 
-        int gaugex = x + 28;
-        int gaugey = y + 51;
+        int gaugex = x + 196;
+        int gaugey = y + 38;
 
-        int gaugextex = 227;
-        int gaugeytex = 29;
+        int gaugextex = 243;
+        int gaugeytex = 45;
         int gaugetexwidth = 13;
         int gaugetexheight = 3;
         pose.pushPose();

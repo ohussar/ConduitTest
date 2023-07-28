@@ -1,9 +1,8 @@
 package com.ohussar.conduittest.Blocks.Conduit;
 
-import com.ohussar.conduittest.Blocks.SourceMachine.SourceMachineEntity;
-import com.ohussar.conduittest.ConduitMain;
 import com.ohussar.conduittest.Core.DirectionHolder;
 import com.ohussar.conduittest.Core.Interfaces.ConduitExtractable;
+import com.ohussar.conduittest.Core.Interfaces.ISteamCapabilityProvider;
 import com.ohussar.conduittest.Registering.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -22,9 +21,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Conduit extends BaseEntityBlock {
     public static final IntegerProperty NORTH = IntegerProperty.create("north",0, 2);
@@ -47,9 +43,15 @@ public class Conduit extends BaseEntityBlock {
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockGetter blockgetter = context.getLevel();
         BlockPos blockpos = context.getClickedPos();
+        BlockState state = getState(blockgetter, super.getStateForPlacement(context), blockpos);
 
-        return getState(blockgetter, super.getStateForPlacement(context), blockpos);
+        return pipePlacement(context, state);
     }
+
+    public BlockState pipePlacement(BlockPlaceContext context, BlockState state){
+        return state;
+    }
+
 
     @Override
     public BlockState updateShape(BlockState state, Direction p_60542_, BlockState p_60543_, LevelAccessor level, BlockPos pos, BlockPos p_60546_) {
@@ -102,6 +104,21 @@ public class Conduit extends BaseEntityBlock {
         return 0;
     }
 
+    public int getConnectionInt(BlockEntity block, BlockPos pos){
+        if(block instanceof ConduitExtractable<?> steam){
+            if(steam instanceof ISteamCapabilityProvider<?> prov){
+                if(prov.canAttachConduit(pos)){
+                    return 2;
+                }
+            }else{
+                return 2;
+            }
+        }else if(block instanceof ConduitBlockEntity){
+            return 1;
+        }
+        return 0;
+    }
+
     public DirectionHolder getDirections(BlockPos pos, BlockGetter getter){
         BlockPos blockpos1 = pos.north();
         BlockPos blockpos2 = pos.east();
@@ -115,12 +132,12 @@ public class Conduit extends BaseEntityBlock {
         BlockEntity blockstate4 = getter.getBlockEntity(blockpos4);
         BlockEntity blockstate5 = getter.getBlockEntity(blockpos5);
         BlockEntity blockstate6 = getter.getBlockEntity(blockpos6);
-        int north = getConnectionInt(blockstate1);
-        int east = getConnectionInt(blockstate2);
-        int south = getConnectionInt(blockstate3);
-        int west = getConnectionInt(blockstate4);
-        int up = getConnectionInt(blockstate5);
-        int down = getConnectionInt(blockstate6);
+        int north = getConnectionInt(blockstate1, pos);
+        int east = getConnectionInt(blockstate2, pos);
+        int south = getConnectionInt(blockstate3, pos);
+        int west = getConnectionInt(blockstate4, pos);
+        int up = getConnectionInt(blockstate5, pos);
+        int down = getConnectionInt(blockstate6, pos);
         return new DirectionHolder(north, east, south, west, up, down);
     }
 

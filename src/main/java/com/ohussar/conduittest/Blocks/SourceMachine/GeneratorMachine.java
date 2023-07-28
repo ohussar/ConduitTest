@@ -1,12 +1,10 @@
-package com.ohussar.conduittest.Blocks.Machine;
+package com.ohussar.conduittest.Blocks.SourceMachine;
 
 import com.ohussar.conduittest.Registering.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -18,12 +16,15 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-public class CompactingMachine extends BaseEntityBlock {
+public class GeneratorMachine extends BaseEntityBlock {
+
     public static final DirectionProperty FACING = DirectionalBlock.FACING;
-    public CompactingMachine(Properties properties) {
+    public final VoxelShape shape = Block.box(7, 0, 0, 13, 9.95, 15);
+    public GeneratorMachine(Properties properties) {
         super(properties);
         this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH));
     }
@@ -44,19 +45,16 @@ public class CompactingMachine extends BaseEntityBlock {
                 break;
             }
         }
-        
+
         return this.defaultBlockState().setValue(FACING, desiredDir.getOpposite());
     }
-    @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if(!level.isClientSide()){
-            if(level.getBlockEntity(pos) instanceof CompactingMachineEntity entity){
-                entity.onClick(level, player, (CompactingMachineEntity) level.getBlockEntity(pos), pos);
-                return InteractionResult.SUCCESS;
-            }
-        }
 
-        return InteractionResult.SUCCESS;
+
+
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new GeneratorMachineEntity(pos, state);
     }
 
     @Override
@@ -64,15 +62,14 @@ public class CompactingMachine extends BaseEntityBlock {
         return RenderShape.MODEL;
     }
 
-    @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new CompactingMachineEntity(pos, state);
+    public VoxelShape getShape(BlockState p_60555_, BlockGetter p_60556_, BlockPos p_60557_, CollisionContext p_60558_) {
+        return shape;
     }
 
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return createTickerHelper(type, ModBlockEntities.COMPACTING_MACHINE_ENTITY.get(), CompactingMachineEntity::tick);
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type_) {
+        return createTickerHelper(type_, ModBlockEntities.GENERATOR_MACHINE_ENTITY.get(), GeneratorMachineEntity::tick);
     }
 }

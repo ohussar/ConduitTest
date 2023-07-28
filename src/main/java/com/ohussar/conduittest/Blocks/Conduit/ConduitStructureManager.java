@@ -3,6 +3,7 @@ package com.ohussar.conduittest.Blocks.Conduit;
 import com.ohussar.conduittest.ConduitMain;
 import com.ohussar.conduittest.Core.CommonFunctions;
 import com.ohussar.conduittest.Core.Interfaces.ISteamCapabilityProvider;
+import com.ohussar.conduittest.Core.Interfaces.ISteamGenerationProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -101,7 +102,9 @@ public class ConduitStructureManager {
 
                     for(int jj = 0; jj < aa.length; jj++){
                         if(level.getBlockEntity(aa[jj]) instanceof ISteamCapabilityProvider<?> steam){
-                            addMachines(aa[jj]);
+                            if(steam.canAttachConduit(pos)){
+                                addMachines(aa[jj]);
+                            }
                         }
                     }
                 }
@@ -124,6 +127,22 @@ public class ConduitStructureManager {
             blocksConnected.add(pos);
         }
     }
+
+
+    public void tickSystem(Level level){
+        addToSystem(0, level);
+
+        if(blocksConnected.size() > 0){
+            for(int kk = 0; kk < blocksConnected.size(); kk++){
+                BlockEntity entity = level.getBlockEntity(blocksConnected.get(kk));
+                if(entity instanceof ISteamGenerationProvider steam){
+                    double pressureProvided = steam.providePressure(this);
+                    addToSystem(pressureProvided, level);
+                }
+            }
+        }
+    }
+
 
     public void addToSystem(double steamValue, Level level){
         if(blocksConnected.size() > 0){
@@ -155,13 +174,13 @@ public class ConduitStructureManager {
                                 toChange = 0d;
                             }
                             if(toChange == 0 && Math.abs(stableNumber - steam.getMainTank().storage) > 0){
-                                toChange = (double)0.01 * (double)sign(stableNumber - steam.getMainTank().storage);
-                            }else if(Math.abs(toChange) > 30){
-                                toChange = 30d * sign(toChange);
+                                toChange = (double)0.5 * (double)sign(stableNumber - steam.getMainTank().storage);
+                            }else if(Math.abs(toChange) > 50d){
+                                toChange = 50d * sign(toChange);
                             }
                             toChange = Math.round(toChange*(double)100)/(double)100;
-                            steam.getMainTank().storage += toChange;
 
+                            steam.getMainTank().storage += toChange;
                         }
                     }
                 }

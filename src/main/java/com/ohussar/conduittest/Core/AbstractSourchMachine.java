@@ -5,6 +5,7 @@ import com.ohussar.conduittest.Blocks.Conduit.ConduitStructureManager;
 import com.ohussar.conduittest.ConduitMain;
 import com.ohussar.conduittest.Core.Interfaces.ConduitExtractable;
 import com.ohussar.conduittest.Core.Interfaces.ISteamCapabilityProvider;
+import com.ohussar.conduittest.Core.Interfaces.ISteamGenerationProvider;
 import com.ohussar.conduittest.Core.Networking.Messages.SyncTank;
 import com.ohussar.conduittest.Core.Networking.ModMessages;
 import net.minecraft.client.Minecraft;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-public abstract class AbstractSourchMachine extends BlockEntity implements ISteamCapabilityProvider {
+public abstract class AbstractSourchMachine extends BlockEntity implements ISteamCapabilityProvider, ISteamGenerationProvider {
     public UUID id;
     private int ticksCounted = 0;
     private int tickGenerated = 0;
@@ -42,14 +43,26 @@ public abstract class AbstractSourchMachine extends BlockEntity implements IStea
     }
 
     @Override
+    public SteamTank getMainTank() {
+        return this.tank;
+    }
+
+    @Override
     public void load(CompoundTag p_155245_) {
         super.load(p_155245_);
         id = p_155245_.getUUID("machineid");
+        tank.loadNbt(p_155245_);
+    }
+
+    @Override
+    public double providePressure(ConduitStructureManager manager) {
+        return this.machineGeneration;
     }
 
     @Override
     protected void saveAdditional(CompoundTag p_187471_) {
         p_187471_.putUUID("machineid", id);
+        tank.saveNbt(p_187471_);
         super.saveAdditional(p_187471_);
     }
 
@@ -60,20 +73,7 @@ public abstract class AbstractSourchMachine extends BlockEntity implements IStea
             ModMessages.sendToClients(new SyncTank(entity.tank, entity.worldPosition));
         }
 
-        BlockPos[] ad = CommonFunctions.adjacentBlocks(pos);
-        List<ConduitStructureManager> structureManagers = new ArrayList<>();
-        for(int k = 0; k < ad.length; k++){
-            if(level.getBlockEntity(ad[k]) instanceof ConduitBlockEntity be){
-                if(!structureManagers.contains(be.getManager())){
-                    structureManagers.add(be.getManager());
-                }
-            }
-        }
-        for(int jj = 0; jj < structureManagers.size(); jj++){
-            if(structureManagers.get(jj) != null && structureManagers.get(jj).getMachineCount() > 0){
-                double increase = (double) machineGeneration / (double)structureManagers.size();
-                structureManagers.get(jj).addToSystem(increase, this.level);
-            }
-        }
+        this.tank.storage+=machineGeneration;
+
     }
 }

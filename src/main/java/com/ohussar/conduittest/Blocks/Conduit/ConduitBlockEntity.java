@@ -1,12 +1,8 @@
 package com.ohussar.conduittest.Blocks.Conduit;
 
-import com.ohussar.conduittest.Blocks.SourceMachine.SourceMachineEntity;
 import com.ohussar.conduittest.ConduitMain;
-import com.ohussar.conduittest.Core.DirectionHolder;
 import com.ohussar.conduittest.Core.Interfaces.ConduitExtractable;
-import com.ohussar.conduittest.Core.AbstractSourchMachine;
 import com.ohussar.conduittest.Registering.ModBlockEntities;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.BlockGetter;
@@ -44,6 +40,7 @@ public class ConduitBlockEntity extends BlockEntity {
 
     public void createManager(){
         this.manager = new ConduitStructureManager(worldPosition);
+        this.manager.updateMachines(this.level);
     }
 
     public void setManager(ConduitStructureManager manager){
@@ -112,7 +109,7 @@ public class ConduitBlockEntity extends BlockEntity {
             if(entity.manager.isRoot(pos)){
                 //stabilizes the system
                 entity.isRoot = true;
-                entity.manager.addToSystem(0, level);
+                entity.manager.tickSystem(level);
                 if(entity.start){
                     entity.start = false;
                     entity.manager.reassembleStructure(level, pos);
@@ -121,6 +118,9 @@ public class ConduitBlockEntity extends BlockEntity {
             }else{
                 entity.isRoot = false;
             }
+        }
+        if(entity.manager == null && !level.isClientSide()){
+            entity.createManager();
         }
     }
 }

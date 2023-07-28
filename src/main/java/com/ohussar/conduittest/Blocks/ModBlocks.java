@@ -2,7 +2,7 @@ package com.ohussar.conduittest.Blocks;
 
 import com.ohussar.conduittest.Blocks.Conduit.Conduit;
 import com.ohussar.conduittest.Blocks.Machine.CompactingMachine;
-import com.ohussar.conduittest.Blocks.SourceMachine.SourcheMachine;
+import com.ohussar.conduittest.Blocks.SourceMachine.GeneratorMachine;
 import com.ohussar.conduittest.ConduitMain;
 import com.ohussar.conduittest.Items.ModItems;
 import net.minecraft.world.item.BlockItem;
@@ -24,8 +24,8 @@ public class ModBlocks {
     public static final RegistryObject<Block> CONDUIT = BLOCKS.register("conduit", () -> new Conduit(BlockBehaviour.Properties.copy(Blocks.STONE)));
     public static final RegistryObject<Block> COMPACTING_MACHINE = register("compacting_machine",
             () -> new CompactingMachine(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK)));
-    public static final RegistryObject<Block> SOURCE_MACHINE = register("source_machine",
-            () -> new SourcheMachine(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK)));
+    public static final RegistryObject<Block> GENERATOR_MACHINE = register("generator_machine",
+            () -> new GeneratorMachine(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).noOcclusion()));
     public static <T extends Block> RegistryObject<Block> register(String name, Supplier<T> block){
         RegistryObject<Block> BLOCK = BLOCKS.register(name, block);
         registerBlockItem(name, BLOCK, ConduitMain.tab);

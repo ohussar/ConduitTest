@@ -1,6 +1,7 @@
 package com.ohussar.conduittest.Core.Interfaces;
 
 import com.ohussar.conduittest.Core.SteamTank;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.concurrent.locks.StampedLock;
@@ -30,5 +31,15 @@ public interface ISteamCapabilityProvider<T extends BlockEntity> extends Conduit
      * @param tank
      */
     public void syncTank(SteamTank tank);
+
+    /**
+     * Make this the faces that can connect a cable based on the cable pos
+     * @param pos
+     * @return True or false
+     */
+    public boolean canAttachConduit(BlockPos pos);
+
+    public boolean canReceivePressure();
+
 
 }

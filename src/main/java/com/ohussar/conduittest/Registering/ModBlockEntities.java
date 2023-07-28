@@ -3,7 +3,7 @@ package com.ohussar.conduittest.Registering;
 import com.ohussar.conduittest.Blocks.Conduit.ConduitBlockEntity;
 import com.ohussar.conduittest.Blocks.Machine.CompactingMachineEntity;
 import com.ohussar.conduittest.Blocks.ModBlocks;
-import com.ohussar.conduittest.Blocks.SourceMachine.SourceMachineEntity;
+import com.ohussar.conduittest.Blocks.SourceMachine.GeneratorMachineEntity;
 import com.ohussar.conduittest.ConduitMain;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -21,8 +21,8 @@ public class ModBlockEntities {
    public static final RegistryObject<BlockEntityType<CompactingMachineEntity>> COMPACTING_MACHINE_ENTITY = BLOCK_ENTITY_TYPES.register("machine_entity",
            () -> BlockEntityType.Builder.of(CompactingMachineEntity::new, ModBlocks.COMPACTING_MACHINE.get()).build(null));
 
-   public static final RegistryObject<BlockEntityType<SourceMachineEntity>> SOURCE_MACHINE_ENTITY = BLOCK_ENTITY_TYPES.register("source_machine_entity",
-           () -> BlockEntityType.Builder.of(SourceMachineEntity::new, ModBlocks.SOURCE_MACHINE.get()).build(null));
+   public static final RegistryObject<BlockEntityType<GeneratorMachineEntity>> GENERATOR_MACHINE_ENTITY = BLOCK_ENTITY_TYPES.register("source_machine_entity",
+           () -> BlockEntityType.Builder.of(GeneratorMachineEntity::new, ModBlocks.GENERATOR_MACHINE.get()).build(null));
 
     public static void register(IEventBus bus){
         BLOCK_ENTITY_TYPES.register(bus);
