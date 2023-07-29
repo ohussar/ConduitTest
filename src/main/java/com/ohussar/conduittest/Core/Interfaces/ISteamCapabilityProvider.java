@@ -37,9 +37,23 @@ public interface ISteamCapabilityProvider<T extends BlockEntity> extends Conduit
      * @param pos
      * @return True or false
      */
+
     public boolean canAttachConduit(BlockPos pos);
 
+    /**
+     * must return true if a machine / cable can insert pressure into the steam tank if it has one.
+     * if returns false, is expected that this machine can only provide pressure or it does not provide anything
+     * to the cable system.
+     * @return
+     */
     public boolean canReceivePressure();
+
+    /**
+     * must return a double value that is considered the maximum pressure. The pressure is calculated with the following
+     * formula: tankStorage / tankCapacity (maybe considered volume) * 0.5;
+     * @return double
+     */
+    public double maxPressure();
 
 
 }

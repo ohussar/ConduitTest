@@ -1,14 +1,11 @@
-package com.ohussar.conduittest.Core;
+package com.ohussar.conduittest.Core.MachineBase;
 
-import com.ohussar.conduittest.Blocks.Conduit.ConduitBlockEntity;
 import com.ohussar.conduittest.Blocks.Conduit.ConduitStructureManager;
-import com.ohussar.conduittest.ConduitMain;
-import com.ohussar.conduittest.Core.Interfaces.ConduitExtractable;
 import com.ohussar.conduittest.Core.Interfaces.ISteamCapabilityProvider;
 import com.ohussar.conduittest.Core.Interfaces.ISteamGenerationProvider;
 import com.ohussar.conduittest.Core.Networking.Messages.SyncTank;
 import com.ohussar.conduittest.Core.Networking.ModMessages;
-import net.minecraft.client.Minecraft;
+import com.ohussar.conduittest.Core.SteamTank;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
@@ -16,9 +13,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 public abstract class AbstractSourchMachine extends BlockEntity implements ISteamCapabilityProvider, ISteamGenerationProvider {

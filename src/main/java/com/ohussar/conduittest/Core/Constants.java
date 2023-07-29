@@ -8,6 +8,12 @@ public class Constants {
 
     public static double SPECIFIC_HEAT = 452;
 
+    public static final double PRESSURE_MULT = 0.5;
+
+
+    public static double getPressure(double steamvolume, double containervolume){
+        return (steamvolume/containervolume) * PRESSURE_MULT;
+    }
     public static double Pressure(double volume, double steamvolume, double temp){
         return ((MOL_PER_M3 * GAS_CONSTANT * temp * steamvolume) / volume) * TO_BAR;
     }

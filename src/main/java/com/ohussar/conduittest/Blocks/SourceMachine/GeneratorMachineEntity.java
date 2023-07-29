@@ -1,8 +1,9 @@
 package com.ohussar.conduittest.Blocks.SourceMachine;
 
+import com.ohussar.conduittest.ConduitMain;
 import com.ohussar.conduittest.Core.AllowedDirections;
 import com.ohussar.conduittest.Core.SteamTank;
-import com.ohussar.conduittest.Core.AbstractSourchMachine;
+import com.ohussar.conduittest.Core.MachineBase.AbstractSourchMachine;
 import com.ohussar.conduittest.Registering.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -55,10 +56,33 @@ public class GeneratorMachineEntity extends AbstractSourchMachine {
     }
 
     @Override
+    public double maxPressure() {
+        return 1;
+    }
+
+    @Override
     public boolean canAttachConduit(BlockPos pos) {
         BlockState block = this.level.getBlockState(worldPosition);
         Direction dir = block.getValue(DirectionalBlock.FACING);
 
         return allowedDirections.isAllowed(this.worldPosition, pos, dir);
+    }
+
+    @Override
+    public double maximumPressurePush() {
+        return 9.5;
+    }
+
+    @Override
+    public double pressureDecay(double pressure) {
+        if(pressure <= 0){
+            pressure = 0.1;
+        }
+        double press = Math.pow((this.maximumPressurePush()/2) / pressure, 3);
+        if(press > 1){
+            press = 1;
+        }
+        ConduitMain.LOGGER.info(Double.toString(press));
+        return press;
     }
 }

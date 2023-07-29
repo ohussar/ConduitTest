@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractContainerQuickMoveMenu extends AbstractContainerMenu {
 
-    private int TE_INVENTORY_SLOT_COUNT = 0;
+    private int TE_INVENTORY_SLOT_COUNT = 4;
     protected AbstractContainerQuickMoveMenu(@Nullable MenuType<?> type, int containerId, int inventorySlotCount, Inventory inv) {
         super(type, containerId);
         this.TE_INVENTORY_SLOT_COUNT = inventorySlotCount;
@@ -36,10 +36,10 @@ public abstract class AbstractContainerQuickMoveMenu extends AbstractContainerMe
         if (index < VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT) {
             // This is a vanilla container slot so merge the stack into the tile inventory
             if (!moveItemStackTo(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX, TE_INVENTORY_FIRST_SLOT_INDEX
-                    + TE_INVENTORY_SLOT_COUNT, false)) {
+                    + this.TE_INVENTORY_SLOT_COUNT, false)) {
                 return ItemStack.EMPTY;  // EMPTY_ITEM
             }
-        } else if (index < TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT) {
+        } else if (index < TE_INVENTORY_FIRST_SLOT_INDEX + this.TE_INVENTORY_SLOT_COUNT) {
             // This is a TE slot so merge the stack into the players inventory
             if (!moveItemStackTo(sourceStack, VANILLA_FIRST_SLOT_INDEX, VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT, false)) {
                 return ItemStack.EMPTY;

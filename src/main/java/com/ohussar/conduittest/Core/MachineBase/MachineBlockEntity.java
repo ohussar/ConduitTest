@@ -1,10 +1,10 @@
-package com.ohussar.conduittest.Core;
+package com.ohussar.conduittest.Core.MachineBase;
 
-import com.ohussar.conduittest.ConduitMain;
+import com.ohussar.conduittest.Core.Constants;
 import com.ohussar.conduittest.Core.Interfaces.ISteamCapabilityProvider;
 import com.ohussar.conduittest.Core.Networking.Messages.SyncTank;
 import com.ohussar.conduittest.Core.Networking.ModMessages;
-import com.ohussar.conduittest.Registering.ModBlockEntities;
+import com.ohussar.conduittest.Core.SteamTank;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
@@ -81,7 +81,7 @@ public abstract class MachineBlockEntity extends BlockEntity implements ISteamCa
             }
         }
         this.tank.storage = Math.round(this.tank.storage*10d)/10d;
-        this.tank.pressure = (tank.storage/ tank.maxCapacity)*0.50;
+        this.tank.pressure = Constants.getPressure(tank.storage, tank.maxCapacity);
     }
     @Override
     public Type getExtractionType(){

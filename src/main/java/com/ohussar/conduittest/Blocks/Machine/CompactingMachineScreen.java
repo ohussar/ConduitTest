@@ -41,18 +41,21 @@ public class CompactingMachineScreen extends AbstractContainerScreen<CompactingM
         int gaugetexheight = 3;
         pose.pushPose();
 
-        CompactingMachineEntity entity = (CompactingMachineEntity) Minecraft.getInstance().level.getBlockEntity(menu.entity.getBlockPos());
+        CompactingMachineEntity entity = this.menu.entity;
 
-        float ff = (float) entity.tank.pressure/30;
+        float ff = (float) (entity.tank.pressure/ entity.maxPressure());
 
         pose.pushPose();
         float alpha = ff*180;
-        pose.translate(gaugex+0.5, gaugey+0.5, 0);
+
+        double gaugeyfixed = gaugey+0.5;
+        double gaugexfixed = gaugex+0.5;
+
+        pose.translate(gaugexfixed, gaugeyfixed, 0);
         pose.mulPose(Quaternion.fromXYZDegrees(new Vector3f(0.f, 0.f, alpha)));
-        pose.translate(-(gaugex+0.5), -(gaugey+0.5), 0);
+        pose.translate(-gaugexfixed, -gaugeyfixed, 0);
         this.blit(pose, gaugex - gaugetexwidth + 2, gaugey-gaugetexheight/2, gaugextex, gaugeytex, gaugetexwidth, gaugetexheight);
         pose.popPose();
-        drawCenteredString(pose, font, Double.toString(entity.tank.storage), x+ 60,y + 60, y+60);
     }
     @Override
     public void render(PoseStack stack, int mouseX, int mouseY, float delta){

@@ -2,6 +2,7 @@ package com.ohussar.conduittest.Blocks.Conduit;
 
 import com.ohussar.conduittest.ConduitMain;
 import com.ohussar.conduittest.Core.CommonFunctions;
+import com.ohussar.conduittest.Core.Constants;
 import com.ohussar.conduittest.Core.Interfaces.ISteamCapabilityProvider;
 import com.ohussar.conduittest.Core.Interfaces.ISteamGenerationProvider;
 import net.minecraft.core.BlockPos;
@@ -16,6 +17,7 @@ import java.util.UUID;
 public class ConduitStructureManager {
 
     private BlockPos original;
+    private double systemPressure = 0;
     private List<BlockPos> conduitsConnected = new ArrayList<>();
     private List<BlockPos> blocksConnected = new ArrayList<>();
     public UUID uuid;
@@ -137,7 +139,8 @@ public class ConduitStructureManager {
                 BlockEntity entity = level.getBlockEntity(blocksConnected.get(kk));
                 if(entity instanceof ISteamGenerationProvider steam){
                     double pressureProvided = steam.providePressure(this);
-                    addToSystem(pressureProvided, level);
+                    double pressureDecay = steam.pressureDecay(this.systemPressure);
+                    addToSystem(pressureProvided * pressureDecay, level);
                 }
             }
         }
@@ -149,19 +152,21 @@ public class ConduitStructureManager {
             double totalStorage = 0;
             int number = 0;
             double totalparts = 0;
+            double totalVolume = 0;
             for(int kk = 0; kk < blocksConnected.size(); kk++){
                 BlockEntity entity = level.getBlockEntity(blocksConnected.get(kk));
                 if(entity instanceof ISteamCapabilityProvider<?> steam){
                     if(steam.getMainTank() != null){
                         number++;
                         totalStorage += steam.getMainTank().storage;
+                        totalVolume += steam.getMainTank().maxCapacity;
                         totalparts += (double)1 / (double)(steam.getMainTank().storage > 0 ? steam.getMainTank().storage : 1);
                     }
                 }
             }
 
             double stableNumber = totalStorage/number;
-
+            this.systemPressure = Constants.getPressure(totalStorage, totalVolume);
             if(number > 0) {
                 for (int kk = 0; kk < blocksConnected.size(); kk++) {
                     BlockEntity entity = level.getBlockEntity(blocksConnected.get(kk));
