@@ -2,6 +2,7 @@ package com.ohussar.conduittest.Core.Networking;
 
 import com.ohussar.conduittest.ConduitMain;
 
+import com.ohussar.conduittest.Core.Networking.Messages.SyncFluidTank;
 import com.ohussar.conduittest.Core.Networking.Messages.SyncTank;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -37,6 +38,11 @@ public class ModMessages {
                 .decoder(SyncTank::new)
                 .encoder(SyncTank::toBytes)
                 .consumerMainThread(SyncTank::handle)
+                .add();
+        net.messageBuilder(SyncFluidTank.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(SyncFluidTank::new)
+                .encoder(SyncFluidTank::toBytes)
+                .consumerMainThread(SyncFluidTank::handle)
                 .add();
     }
 

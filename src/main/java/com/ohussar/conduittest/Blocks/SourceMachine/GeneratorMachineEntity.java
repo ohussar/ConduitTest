@@ -78,11 +78,10 @@ public class GeneratorMachineEntity extends AbstractSourchMachine {
         if(pressure <= 0){
             pressure = 0.1;
         }
-        double press = Math.pow((this.maximumPressurePush()/2) / pressure, 3);
-        if(press > 1){
-            press = 1;
+        double decay = Math.pow((this.maximumPressurePush()/2) / pressure, 3);
+        if(decay > 1){
+            decay = 1;
         }
-        ConduitMain.LOGGER.info(Double.toString(press));
-        return press;
+        return decay;
     }
 }

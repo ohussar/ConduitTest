@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "" : {"model":  "conduit_test:block/tank"}
+  }
+}

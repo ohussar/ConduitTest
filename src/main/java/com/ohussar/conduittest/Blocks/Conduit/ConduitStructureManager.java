@@ -95,7 +95,6 @@ public class ConduitStructureManager {
 
     public void updateMachines(Level level){
         blocksConnected.clear();
-
         if(conduitsConnected.size() > 0){
             for(int kk = 0; kk < conduitsConnected.size(); kk++){
                 if(level.getBlockEntity(conduitsConnected.get(kk)) instanceof ConduitBlockEntity){
@@ -112,9 +111,6 @@ public class ConduitStructureManager {
                 }
             }
         }
-
-        ConduitMain.LOGGER.info("Machines Connected: " + blocksConnected.toString());
-
     }
 
     public int getMachineCount(){
