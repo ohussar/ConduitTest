@@ -25,12 +25,6 @@ public abstract class MachineBlockEntity extends BlockEntity implements ISteamCa
         tank = new SteamTank(1500, 0, 1.5, 30);
         id = UUID.randomUUID();
     }
-
-    @Override
-    public SteamTank[] getTanks() {
-        return new SteamTank[]{tank};
-    }
-
     @Override
     public SteamTank getMainTank() {
         return tank;

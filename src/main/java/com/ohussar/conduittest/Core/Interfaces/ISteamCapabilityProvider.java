@@ -7,11 +7,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import java.util.concurrent.locks.StampedLock;
 
 public interface ISteamCapabilityProvider<T extends BlockEntity> extends ConduitExtractable<T> {
-     /**
-      * Get all tanks in machine
-     @return An array of SteamTanks
-     */
-    public SteamTank[] getTanks();
 
     /**
      *

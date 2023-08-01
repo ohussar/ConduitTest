@@ -1,7 +1,9 @@
 package com.ohussar.conduittest.Blocks.SourceMachine;
 
-import com.ohussar.conduittest.ConduitMain;
 import com.ohussar.conduittest.Core.AllowedDirections;
+import com.ohussar.conduittest.Core.FluidTank;
+import com.ohussar.conduittest.Core.Networking.Messages.SyncFluidTank;
+import com.ohussar.conduittest.Core.Networking.ModMessages;
 import com.ohussar.conduittest.Core.SteamTank;
 import com.ohussar.conduittest.Core.MachineBase.AbstractSourchMachine;
 import com.ohussar.conduittest.Registering.ModBlockEntities;
@@ -11,16 +13,21 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.fluids.FluidStack;
 
 import java.util.UUID;
 
-public class GeneratorMachineEntity extends AbstractSourchMachine {
+public class PressureGeneratorEntity extends AbstractSourchMachine {
     public AllowedDirections allowedDirections = new AllowedDirections();
-    public GeneratorMachineEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.GENERATOR_MACHINE_ENTITY.get(), pos, state);
-        allowedDirections.setValue("right", true);
+    public PressureGeneratorEntity(BlockPos pos, BlockState state) {
+        super(ModBlockEntities.GENERATOR_MACHINE_ENTITY.get(), pos, state, new FluidTank(FluidStack.EMPTY, 1500, 0));
+        allowedDirections.setValue("right", true).setValue("left", true).setValue("front", true);
+        this.filter.add(Fluids.WATER.getSource());
     }
-
+    private int tick = 0;
+    private boolean firstTick = true;
     @Override
     public BlockEntity getBlockEntity(Level level, BlockPos pos) {
         return this;
@@ -31,13 +38,14 @@ public class GeneratorMachineEntity extends AbstractSourchMachine {
         return this.id;
     }
 
-    public static void tick(Level level, BlockPos pos, BlockState state, GeneratorMachineEntity entity){
-        entity.tickEssential(level, pos ,state, entity);
-    }
-
-    @Override
-    public SteamTank[] getTanks() {
-        return new SteamTank[]{tank};
+    public static void tick(Level level, BlockPos pos, BlockState state, PressureGeneratorEntity entity){
+        entity.tickEssential(level, pos,state, entity);
+        entity.tick++;
+        if((entity.tick >= 5 || entity.firstTick)&& !level.isClientSide()){
+            entity.firstTick = false;
+            entity.tick = 0;
+            ModMessages.sendToClients(new SyncFluidTank(entity.tank, pos));
+        }
     }
 
     @Override

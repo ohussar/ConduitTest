@@ -22,7 +22,13 @@ public class FluidTank {
         CompoundTag tag = new CompoundTag();
         tag.putDouble("amountStored", this.fluidStored);
         tag.putDouble("tankCapacity", this.tankCapacity);
-        tag.putString("fluid", ForgeRegistries.FLUIDS.getKey(this.fluid.getFluid()).toString());
+        String aa = "";
+        if(this.fluid == null){
+            aa = "null";
+        }else{
+            ForgeRegistries.FLUIDS.getKey(this.fluid.getFluid()).toString();
+        }
+        tag.putString("fluid", aa);
         nbt.put("FluidTank", tag);
         return nbt;
     }
@@ -31,9 +37,14 @@ public class FluidTank {
         CompoundTag tag =     nbt.getCompound("FluidTank");
         this.fluidStored =    tag.getDouble("amountStored");
         this.tankCapacity =        tag.getInt("tankCapacity");
-        ResourceLocation fluidName = new ResourceLocation(tag.getString("fluid"));
-        Fluid fluid = ForgeRegistries.FLUIDS.getValue(fluidName);
-        this.fluid = new FluidStack(fluid, 1);
+        if(tag.getString("fluid").equals("null")){
+            this.fluid = new FluidStack(FluidStack.EMPTY, 1);;
+        }else{
+            ResourceLocation fluidName = new ResourceLocation(tag.getString("fluid"));
+            Fluid fluid = ForgeRegistries.FLUIDS.getValue(fluidName);
+            this.fluid = new FluidStack(fluid, 1);
+        }
+
     }
 
     public void toBytes(FriendlyByteBuf buf){

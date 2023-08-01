@@ -26,7 +26,14 @@ import java.util.EnumSet;
 import java.util.List;
 
 public class ModRenderer {
-
+    /*
+    DISCLAIMER ------- THIS IS NOT MY CODE
+    I GOT IT FROM CREATE MOD (SOURCE CODE BELOW), THE REASON WHY I COPIED THIS CODE OVER IS THAT IT'S NOT WORTH
+    TO REQUIRE CREATE AS A DEPENDENCY JUST TO DRAW THE FLUID INSIDE A TANK. I AM TOO DUMB TO DO IT RIGHT NOW SO THIS
+    IS THE FIX. -https://github.com/Creators-of-Create/Create/tree/mc1.18/dev/src
+                -https://github.com/Creators-of-Create/Create/blob/mc1.18/dev/src/main/java/com/simibubi/create/foundation/fluid/FluidRenderer.java#L90
+                -https://github.com/Creators-of-Create/Create/blob/mc1.18/dev/src/main/java/com/simibubi/create/foundation/utility/Iterate.java#L11
+     */
     public static void renderFluidBox(FluidStack fluidStack, float xMin, float yMin, float zMin, float xMax, float yMax,
                                       float zMax, MultiBufferSource buffer, PoseStack ms, int light, boolean renderBottom) {
         renderFluidBox(fluidStack, xMin, yMin, zMin, xMax, yMax, zMax,buffer.getBuffer(RenderType.cutout()), ms, light,

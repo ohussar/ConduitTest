@@ -71,13 +71,6 @@ public class ConduitStructureManager {
         BlockPos[] aa = CommonFunctions.adjacentBlocks(pos);
         UUID changeStructureId = UUID.randomUUID();
 
-        int number = 0;
-        for(int k = 0; k < aa.length; k++) {
-            if(level.getBlockEntity(aa[k]) instanceof ConduitBlockEntity entity){
-                number++;
-            }
-        }
-
         BlockPos first = null;
         for(int k = 0; k < aa.length; k++) {
             if(level.getBlockEntity(aa[k]) instanceof ConduitBlockEntity entity){

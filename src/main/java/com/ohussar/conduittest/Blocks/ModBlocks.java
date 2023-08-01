@@ -2,7 +2,7 @@ package com.ohussar.conduittest.Blocks;
 
 import com.ohussar.conduittest.Blocks.Conduit.Conduit;
 import com.ohussar.conduittest.Blocks.Machine.CompactingMachine;
-import com.ohussar.conduittest.Blocks.SourceMachine.GeneratorMachine;
+import com.ohussar.conduittest.Blocks.SourceMachine.PressureGenerator;
 import com.ohussar.conduittest.Blocks.Tank.Tank;
 import com.ohussar.conduittest.ConduitMain;
 import com.ohussar.conduittest.Items.ModItems;
@@ -25,8 +25,8 @@ public class ModBlocks {
     public static final RegistryObject<Block> CONDUIT = BLOCKS.register("conduit", () -> new Conduit(BlockBehaviour.Properties.copy(Blocks.STONE)));
     public static final RegistryObject<Block> COMPACTING_MACHINE = register("compacting_machine",
             () -> new CompactingMachine(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK)));
-    public static final RegistryObject<Block> GENERATOR_MACHINE = register("generator_machine",
-            () -> new GeneratorMachine(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).noOcclusion()));
+    public static final RegistryObject<Block> GENERATOR_MACHINE = register("pressure_generator_machine",
+            () -> new PressureGenerator(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).noOcclusion()));
     public static final RegistryObject<Block> FLUID_TANK = register("tank",
             () -> new Tank(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).noOcclusion()));
 

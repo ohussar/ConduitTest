@@ -24,10 +24,10 @@ public abstract class TankHolderBase<T extends IInsertFluid> extends BaseEntityB
     @Override
     public ItemStack pickupBlock(LevelAccessor level, BlockPos pos, BlockState state) {
         T entity = (T) level.getBlockEntity(pos);
-        if(entity.canInsertAmountAndFluid(-1000, entity.getTank().fluid.getFluid())){
+        if(entity.canExtractAmount(1000)){
             ItemStack bucket = new ItemStack(entity.getTank().fluid.getFluid().getBucket());
             bucket.setCount(1);
-            entity.insertAmountOfFluid(-1000, entity.getTank().fluid.getFluid());
+            entity.extractAmount(1000);
             return bucket;
 
         }
