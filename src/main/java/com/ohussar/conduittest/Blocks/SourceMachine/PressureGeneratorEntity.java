@@ -9,18 +9,35 @@ import com.ohussar.conduittest.Core.MachineBase.AbstractSourchMachine;
 import com.ohussar.conduittest.Registering.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
 public class PressureGeneratorEntity extends AbstractSourchMachine {
     public AllowedDirections allowedDirections = new AllowedDirections();
+
+    private ItemStackHandler handler = new ItemStackHandler(1){
+        @Override
+        protected void onContentsChanged(int slot){
+            setChanged();
+        }
+    };
+
+    private LazyOptional<IItemHandler> inventoryLazyOptional = LazyOptional.empty();;
     public PressureGeneratorEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.GENERATOR_MACHINE_ENTITY.get(), pos, state, new FluidTank(FluidStack.EMPTY, 1500, 0));
         allowedDirections.setValue("right", true).setValue("left", true).setValue("front", true);
@@ -37,7 +54,35 @@ public class PressureGeneratorEntity extends AbstractSourchMachine {
     public UUID getId() {
         return this.id;
     }
+    @Override
+    public void load(CompoundTag nbt) {
+        super.load(nbt);
+        handler.deserializeNBT(nbt.getCompound("inventory"));
+    }
+    @Override
+    protected void saveAdditional(CompoundTag nbt) {
+        nbt.put("inventory", handler.serializeNBT());
+        super.saveAdditional(nbt);
+    }
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        inventoryLazyOptional = LazyOptional.of(() -> handler);
+    }
 
+    @Override
+    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+        if(cap == ForgeCapabilities.ITEM_HANDLER){
+            return inventoryLazyOptional.cast();
+        }
+        return super.getCapability(cap, side);
+    }
+
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        inventoryLazyOptional.invalidate();
+    }
     public static void tick(Level level, BlockPos pos, BlockState state, PressureGeneratorEntity entity){
         entity.tickEssential(level, pos,state, entity);
         entity.tick++;
