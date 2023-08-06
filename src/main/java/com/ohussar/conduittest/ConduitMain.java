@@ -8,6 +8,7 @@ import com.ohussar.conduittest.Blocks.ModBlocks;
 import com.ohussar.conduittest.Blocks.Tank.TankBlockEntityRenderer;
 import com.ohussar.conduittest.Core.HUD.InfoHudOverlay;
 import com.ohussar.conduittest.Core.Networking.ModMessages;
+import com.ohussar.conduittest.Core.Rendering.ModCustomModels;
 import com.ohussar.conduittest.Items.ModItems;
 import com.ohussar.conduittest.Registering.ModBlockEntities;
 import com.ohussar.conduittest.Registering.ModMenuTypes;
@@ -64,6 +65,7 @@ public class ConduitMain
     {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
+        ModCustomModels.assembleTextures();
         ModBlocks.register(modEventBus);
         ModItems.register(modEventBus);
         ModBlockEntities.register(modEventBus);

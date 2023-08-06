@@ -1,0 +1,22 @@
+{
+	"credit": "Made with Blockbench",
+	"textures": {
+		"0": "conduit_test:block/fluidpipe",
+		"particle": "conduit_test:block/fluidpipe"
+	},
+	"elements": [
+		{
+			"name": "center",
+			"from": [6, 5, 6],
+			"to": [10, 9, 10],
+			"faces": {
+				"north": {"uv": [5.5, 0, 9.5, 4], "texture": "#0"},
+				"east": {"uv": [5.5, 0, 9.5, 4], "texture": "#0"},
+				"south": {"uv": [5.5, 0, 9.5, 4], "texture": "#0"},
+				"west": {"uv": [5.5, 0, 9.5, 4], "texture": "#0"},
+				"up": {"uv": [5.5, 0, 9.5, 4], "texture": "#0"},
+				"down": {"uv": [5.5, 0, 9.5, 4], "texture": "#0"}
+			}
+		}
+	]
+}
